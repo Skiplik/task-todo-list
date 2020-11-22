@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import './app.css';
 
@@ -6,16 +6,56 @@ import Header from '../header';
 import Footer from "../footer";
 import TaskList from "../task-list";
 
-const App = () => {
-    return (
-        <>
-            <Header />
-            <section className="main">
-                <TaskList />
-                <Footer />
-            </section>
-        </>
-    );
-};
+export default class App extends Component {
 
-export default App;
+    state = {
+        tasks: [
+            { id: 1, description: 'First todo', created: 1606049973109, completed: false, editing: false },
+            { id: 2, description: 'Second todo', created: 1606049973109, completed: false, editing: false },
+            { id: 3, description: 'Third todo', created: 1606049973109, completed: false, editing: false }
+        ]
+    };
+
+    deleteTask = (id) => {
+        this.setState(({ tasks }) => {
+            let newTasks = tasks.filter(task => task.id !== id);
+            return {
+                tasks: newTasks
+            };
+        });
+    };
+
+    completedTask = (id) => {
+        this.setState(({ tasks }) => {
+            let newTasks = tasks.map(task => {
+                if (task.id === id) {
+                    let newTask = { ...task };
+                    newTask.completed = !newTask.completed;
+                    return newTask;
+                }
+                return task;
+            });
+            return {
+                tasks: newTasks
+            };
+        });
+    };
+
+    render() {
+
+        let { tasks } = this.state;
+
+        return (
+            <>
+                <Header />
+                <section className="main">
+                    <TaskList
+                        tasks={tasks}
+                        onDeleteTask={ this.deleteTask }
+                        onCompletedTask={ this.completedTask } />
+                    <Footer />
+                </section>
+            </>
+        );
+    };
+};

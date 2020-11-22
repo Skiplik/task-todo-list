@@ -1,30 +1,38 @@
 import React from 'react';
-import { formatDistance, subMinutes } from 'date-fns'
+import { formatDistance } from 'date-fns'
 
 import './task.css';
 
 const Task = ({
-    editable = false,
-    description = 'Task description'
+    onDelete: deleteBtnClickHandler,
+    onCompleted: labelClickHandler,
+    task: {
+        description = 'Task description',
+        created,
+        editing = false
+    }
 }) => {
-    let created = `created ${ formatDistance(subMinutes(new Date(), 5), new Date()) } ago`;
+    let createdString = '';
+    let createdDate = created ? new Date(created) : null;
 
-    const editInput = () => {
-        return <input type="text" className="edit" defaultValue={description} />;
-    };
+    if (createdDate && createdDate.toString() !== 'Invalid Date') {
+        createdString = `created ${ formatDistance(createdDate, new Date()) } ago`;
+    }
+
+    const EditInput = () => editing ? <input type="text" className="edit" defaultValue={description} /> : null;
 
     return (
         <>
             <div className="view">
                 <input className="toggle" type="checkbox" />
-                <label>
+                <label onClick={ labelClickHandler }>
                     <span className="description">{ description }</span>
-                    <span className="created">{ created }</span>
+                    <span className="created">{ createdString }</span>
                 </label>
                 <button className="icon icon-edit"></button>
-                <button className="icon icon-destroy"></button>
+                <button onClick={ deleteBtnClickHandler } className="icon icon-destroy"></button>
             </div>
-            { editable && editInput() }
+            <EditInput />
         </>
     );
 };
