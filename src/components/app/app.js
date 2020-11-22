@@ -44,6 +44,7 @@ export default class App extends Component {
     render() {
 
         let { tasks } = this.state;
+        let itemsCount = tasks.filter(task => !task.completed).length;
 
         return (
             <>
@@ -53,7 +54,7 @@ export default class App extends Component {
                         tasks={tasks}
                         onDeleteTask={ this.deleteTask }
                         onCompletedTask={ this.completedTask } />
-                    <Footer />
+                    <Footer count={ itemsCount } />
                 </section>
             </>
         );
