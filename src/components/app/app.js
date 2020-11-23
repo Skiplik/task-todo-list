@@ -8,12 +8,28 @@ import TaskList from "../task-list";
 
 export default class App extends Component {
 
+    taskId = 0;
+
     state = {
         tasks: [
-            { id: 1, description: 'First todo', created: 1606049973109, completed: false, editing: false },
-            { id: 2, description: 'Second todo', created: 1606049973109, completed: false, editing: false },
-            { id: 3, description: 'Third todo', created: 1606049973109, completed: false, editing: false }
+            this.createTask('Write what needs to be done!'),
+            this.createTask('Press enter!'),
+            this.createTask('Check new task!')
         ]
+    };
+
+    createTask(description) {
+        return {
+            id: this.taskId++,
+            description,
+            created: new Date(),
+            completed: false,
+            editing: false
+        }
+    };
+
+    addNewTask = (description) => {
+        this.setState(({ tasks }) => ({ tasks: [...tasks, this.createTask(description)] }));
     };
 
     deleteTask = (id) => {
@@ -48,7 +64,7 @@ export default class App extends Component {
 
         return (
             <>
-                <Header />
+                <Header addNewTask={ this.addNewTask } />
                 <section className="main">
                     <TaskList
                         tasks={tasks}
