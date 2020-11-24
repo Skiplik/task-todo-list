@@ -75,6 +75,10 @@ export default class App extends Component {
         });
     };
 
+    clearCompletedTasks = () => {
+        this.setState(({ tasks }) => ({ tasks: tasks.filter(task => !task.completed) }));
+    };
+
     getFilteredTask = () => {
         const { tasks, filterList } = this.state;
         const filter = filterList.filter(filter => filter.active)[0].name;
@@ -102,7 +106,8 @@ export default class App extends Component {
                     <Footer
                         count={ itemsCount }
                         filters={ filterList }
-                        setFilterTask={ this.setFilterTask } />
+                        setFilterTask={ this.setFilterTask }
+                        clearCompletedTasks={ this.clearCompletedTasks } />
                 </section>
             </>
         );
