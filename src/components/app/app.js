@@ -11,6 +11,11 @@ export default class App extends Component {
     taskId = 0;
 
     state = {
+        filterList: [
+            { id: 1, name: 'All', active: true },
+            { id: 2, name: 'Active', active: false },
+            { id: 3, name: 'Completed', active: false }
+        ],
         tasks: [
             this.createTask('Write what needs to be done!'),
             this.createTask('Press enter!'),
@@ -57,20 +62,47 @@ export default class App extends Component {
         });
     };
 
-    render() {
+    setFilterTask = (id) => {
+        this.setState(({ filterList }) => {
+            let newFilterList = filterList.map(filter => ({
+                ...filter,
+                active: filter.id === id
+            }));
 
-        let { tasks } = this.state;
-        let itemsCount = tasks.filter(task => !task.completed).length;
+            return {
+                filterList: newFilterList
+            }
+        });
+    };
+
+    getFilteredTask = () => {
+        const { tasks, filterList } = this.state;
+        const filter = filterList.filter(filter => filter.active)[0].name;
+
+        if (filter === 'All') return tasks;
+
+        return tasks.filter(task => filter === 'Completed' ? task.completed : !task.completed );
+    };
+
+    getItemCount = () => this.state.tasks.filter(task => !task.completed).length;
+
+    render() {
+        const { filterList } = this.state;
+        const itemsCount = this.getItemCount();
+        const filterTask = this.getFilteredTask();
 
         return (
             <>
                 <Header addNewTask={ this.addNewTask } />
                 <section className="main">
                     <TaskList
-                        tasks={tasks}
+                        tasks={ filterTask }
                         onDeleteTask={ this.deleteTask }
                         onCompletedTask={ this.completedTask } />
-                    <Footer count={ itemsCount } />
+                    <Footer
+                        count={ itemsCount }
+                        filters={ filterList }
+                        setFilterTask={ this.setFilterTask } />
                 </section>
             </>
         );

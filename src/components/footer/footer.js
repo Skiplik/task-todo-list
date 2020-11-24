@@ -4,12 +4,17 @@ import './footer.css';
 
 import TaskFilter from '../tasks-filter';
 
-const Footer = ({ count }) => {
+const Footer = ({ count, filters, setFilterTask }) => {
     return (
         <footer className="footer">
             <span className="todo-count">{ count } items left</span>
-            <TaskFilter />
-            <button className="clear-completed">Clear completed</button>
+            <TaskFilter
+                filters={ filters }
+                setFilterTask={ setFilterTask } />
+            <button
+                className="clear-completed" >
+                Clear completed
+            </button>
         </footer>
     );
 }
