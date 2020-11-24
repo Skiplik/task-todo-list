@@ -48,14 +48,11 @@ export default class App extends Component {
 
     toggleCompletedTask = (id) => {
         this.setState(({ tasks }) => {
-            let newTasks = tasks.map(task => {
-                if (task.id === id) {
-                    let newTask = { ...task };
-                    newTask.completed = !newTask.completed;
-                    return newTask;
-                }
-                return task;
-            });
+            let newTasks = tasks.map(task => ({
+                ...task,
+                completed: task.id === id ? !task.completed : task.completed
+            }));
+
             return {
                 tasks: newTasks
             };
