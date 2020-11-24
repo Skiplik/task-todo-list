@@ -46,7 +46,7 @@ export default class App extends Component {
         });
     };
 
-    completedTask = (id) => {
+    toggleCompletedTask = (id) => {
         this.setState(({ tasks }) => {
             let newTasks = tasks.map(task => {
                 if (task.id === id) {
@@ -102,7 +102,7 @@ export default class App extends Component {
                     <TaskList
                         tasks={ filterTask }
                         onDeleteTask={ this.deleteTask }
-                        onCompletedTask={ this.completedTask } />
+                        onToggleCompletedTask={ this.toggleCompletedTask } />
                     <Footer
                         count={ itemsCount }
                         filters={ filterList }
