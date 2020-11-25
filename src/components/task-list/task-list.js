@@ -1,10 +1,16 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './task-list.css';
 
 import Task from "../task";
 
-const TaskList = ({ tasks, onDeleteTask, onToggleCompletedTask }) => {
+const TaskList = (props) => {
+    const {
+        tasks,
+        onDeleteTask,
+        onToggleCompletedTask
+    } = props;
 
     const items = tasks.map(task => {
         let { id, completed, editing } = task;
@@ -21,7 +27,7 @@ const TaskList = ({ tasks, onDeleteTask, onToggleCompletedTask }) => {
                 <Task
                     onDelete={ () => onDeleteTask(id) }
                     onCompleted={ () => onToggleCompletedTask(id) }
-                    task={task} />
+                    task={ task } />
             </li>
         );
     });
@@ -31,6 +37,22 @@ const TaskList = ({ tasks, onDeleteTask, onToggleCompletedTask }) => {
             { items }
         </ul>
     );
+};
+
+TaskList.defaultProps = {
+    tasks: []
+};
+
+TaskList.propTypes = {
+    tasks: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        description: PropTypes.string,
+        created: PropTypes.instanceOf(Date),
+        completed: PropTypes.bool,
+        editing: PropTypes.bool
+    })),
+    onDeleteTask: PropTypes.func.isRequired,
+    onToggleCompletedTask: PropTypes.func.isRequired
 };
 
 export default TaskList;

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { formatDistanceToNow } from 'date-fns'
 
 import './task.css';
@@ -36,6 +37,16 @@ const Task = (props) => {
             <EditInput />
         </>
     );
+};
+
+Task.propTypes = {
+    onDelete: PropTypes.func.isRequired,
+    onCompleted: PropTypes.func.isRequired,
+    task: PropTypes.shape({
+        description: PropTypes.string,
+        created: PropTypes.instanceOf(Date),
+        editing: PropTypes.bool
+    })
 };
 
 export default Task;
