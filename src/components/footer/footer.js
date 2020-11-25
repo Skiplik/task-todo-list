@@ -20,6 +20,7 @@ const Footer = (props) => {
                 filters={ filters }
                 setFilterTask={ setFilterTask } />
             <button
+                type="button"
                 className="clear-completed"
                 onClick={ clearCompletedTasks } >
                 Clear completed

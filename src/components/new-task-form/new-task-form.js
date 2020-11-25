@@ -9,9 +9,18 @@ export default class NewTaskForm extends Component {
         addNewTask: PropTypes.func.isRequired
     };
 
+    constructor() {
+        super();
+        this.textInput = React.createRef();
+    }
+
     state = {
         todoName: ''
     };
+
+    componentDidMount() {
+        this.textInput.current.focus();
+    }
 
     inputInputHandler = (event) => {
         this.setState({
@@ -20,9 +29,12 @@ export default class NewTaskForm extends Component {
     };
 
     inputEnterPressHandler = (event) => {
-        if (event.code !== "Enter" || !this.state.todoName) return;
+        const { todoName } = this.state;
+        const { addNewTask } = this.props;
 
-        this.props.addNewTask(this.state.todoName);
+        if (event.code !== "Enter" || !todoName) return;
+
+        addNewTask(todoName);
         this.setState({
             todoName: ''
         });
@@ -32,11 +44,11 @@ export default class NewTaskForm extends Component {
         const { todoName } = this.state;
 
         return <input
+            ref={ this.textInput }
             className="new-todo"
             placeholder="What needs to be done?"
             onInput={ this.inputInputHandler }
             onKeyPress={ this.inputEnterPressHandler }
-            value={ todoName }
-            autoFocus />;
+            value={ todoName } />;
     }
 };

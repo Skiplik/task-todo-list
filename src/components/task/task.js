@@ -16,7 +16,7 @@ const Task = (props) => {
     } = props;
 
     const getCreatedTime = () => {
-        if (!created instanceof Date) return '';
+        if (!(created instanceof Date)) return '';
 
         return `created ${ formatDistanceToNow(created) } ago`;
     };
@@ -27,12 +27,19 @@ const Task = (props) => {
         <>
             <div className="view">
                 <input className="toggle" type="checkbox" />
-                <label onClick={ labelClickHandler }>
+                <label role="presentation"  onClick={ labelClickHandler }>
                     <span className="description">{ description }</span>
                     <span className="created">{ getCreatedTime() }</span>
                 </label>
-                <button className="icon icon-edit"></button>
-                <button onClick={ deleteBtnClickHandler } className="icon icon-destroy"></button>
+                <button
+                    type="button"
+                    aria-label="Edit"
+                    className="icon icon-edit" />
+                <button
+                    type="button"
+                    aria-label="Delete"
+                    className="icon icon-destroy"
+                    onClick={ deleteBtnClickHandler } />
             </div>
             <EditInput />
         </>
@@ -42,6 +49,7 @@ const Task = (props) => {
 Task.propTypes = {
     onDelete: PropTypes.func.isRequired,
     onCompleted: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/require-default-props
     task: PropTypes.shape({
         description: PropTypes.string,
         created: PropTypes.instanceOf(Date),

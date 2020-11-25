@@ -10,11 +10,12 @@ const TaskFilter = (props) => {
     } = props;
 
     const filterBtns = filters.map(filter => {
-        let className = filter.active ? 'selected' : null;
+        const className = filter.active ? 'selected' : null;
 
         return (
             <li key={ filter.id } >
                 <button
+                    type="button"
                     className={ className }
                     onClick={ () => setFilterTask(filter.id) }>
                     { filter.name }

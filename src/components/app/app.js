@@ -23,23 +23,13 @@ export default class App extends Component {
         ]
     };
 
-    createTask(description) {
-        return {
-            id: this.taskId++,
-            description,
-            created: new Date(),
-            completed: false,
-            editing: false
-        }
-    };
-
     addNewTask = (description) => {
         this.setState(({ tasks }) => ({ tasks: [...tasks, this.createTask(description)] }));
     };
 
     deleteTask = (id) => {
         this.setState(({ tasks }) => {
-            let newTasks = tasks.filter(task => task.id !== id);
+            const newTasks = tasks.filter(task => task.id !== id);
             return {
                 tasks: newTasks
             };
@@ -48,7 +38,7 @@ export default class App extends Component {
 
     toggleCompletedTask = (id) => {
         this.setState(({ tasks }) => {
-            let newTasks = tasks.map(task => ({
+            const newTasks = tasks.map(task => ({
                 ...task,
                 completed: task.id === id ? !task.completed : task.completed
             }));
@@ -61,7 +51,7 @@ export default class App extends Component {
 
     setFilterTask = (id) => {
         this.setState(({ filterList }) => {
-            let newFilterList = filterList.map(filter => ({
+            const newFilterList = filterList.map(filter => ({
                 ...filter,
                 active: filter.id === id
             }));
@@ -78,14 +68,29 @@ export default class App extends Component {
 
     getFilteredTask = () => {
         const { tasks, filterList } = this.state;
-        const filter = filterList.filter(filter => filter.active)[0].name;
+        const filter = filterList.filter(item => item.active)[0].name;
 
         if (filter === 'All') return tasks;
 
         return tasks.filter(task => filter === 'Completed' ? task.completed : !task.completed );
     };
 
-    getItemCount = () => this.state.tasks.filter(task => !task.completed).length;
+    getItemCount = () => {
+        const { tasks } = this.state;
+        return tasks.filter(task => !task.completed).length
+    };
+
+    createTask(description) {
+        this.taskId += 1;
+
+        return {
+            id: this.taskId,
+            description,
+            created: new Date(),
+            completed: false,
+            editing: false
+        }
+    };
 
     render() {
         const { filterList } = this.state;

@@ -13,7 +13,7 @@ const TaskList = (props) => {
     } = props;
 
     const items = tasks.map(task => {
-        let { id, completed, editing } = task;
+        const { id, completed, editing } = task;
         let className = null;
 
         if (completed) {
