@@ -4,9 +4,8 @@ import PropTypes from 'prop-types';
 import './new-task-form.css';
 
 export default class NewTaskForm extends Component {
-
     static propTypes = {
-        addNewTask: PropTypes.func.isRequired
+        addNewTask: PropTypes.func.isRequired,
     };
 
     constructor() {
@@ -15,7 +14,7 @@ export default class NewTaskForm extends Component {
     }
 
     state = {
-        todoName: ''
+        todoName: '',
     };
 
     componentDidMount() {
@@ -24,7 +23,7 @@ export default class NewTaskForm extends Component {
 
     inputInputHandler = (event) => {
         this.setState({
-            todoName: event.target.value
+            todoName: event.target.value,
         });
     };
 
@@ -32,23 +31,26 @@ export default class NewTaskForm extends Component {
         const { todoName } = this.state;
         const { addNewTask } = this.props;
 
-        if (event.code !== "Enter" || !todoName) return;
+        if (event.code !== 'Enter' || !todoName) return;
 
         addNewTask(todoName);
         this.setState({
-            todoName: ''
+            todoName: '',
         });
     };
 
     render() {
         const { todoName } = this.state;
 
-        return <input
-            ref={ this.textInput }
-            className="new-todo"
-            placeholder="What needs to be done?"
-            onInput={ this.inputInputHandler }
-            onKeyPress={ this.inputEnterPressHandler }
-            value={ todoName } />;
+        return (
+            <input
+                ref={this.textInput}
+                className="new-todo"
+                placeholder="What needs to be done?"
+                onInput={this.inputInputHandler}
+                onKeyPress={this.inputEnterPressHandler}
+                value={todoName}
+            />
+        );
     }
-};
+}

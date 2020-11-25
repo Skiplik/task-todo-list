@@ -3,16 +3,12 @@ import PropTypes from 'prop-types';
 
 import './task-list.css';
 
-import Task from "../task";
+import Task from '../task';
 
 const TaskList = (props) => {
-    const {
-        tasks,
-        onDeleteTask,
-        onToggleCompletedTask
-    } = props;
+    const { tasks, onDeleteTask, onToggleCompletedTask } = props;
 
-    const items = tasks.map(task => {
+    const items = tasks.map((task) => {
         const { id, completed, editing } = task;
         let className = null;
 
@@ -23,36 +19,31 @@ const TaskList = (props) => {
         }
 
         return (
-            <li key={id} className={className} >
-                <Task
-                    onDelete={ () => onDeleteTask(id) }
-                    onCompleted={ () => onToggleCompletedTask(id) }
-                    task={ task } />
+            <li key={id} className={className}>
+                <Task onDelete={() => onDeleteTask(id)} onCompleted={() => onToggleCompletedTask(id)} task={task} />
             </li>
         );
     });
 
-    return (
-        <ul className="todo-list">
-            { items }
-        </ul>
-    );
+    return <ul className="todo-list">{items}</ul>;
 };
 
 TaskList.defaultProps = {
-    tasks: []
+    tasks: [],
 };
 
 TaskList.propTypes = {
-    tasks: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        description: PropTypes.string,
-        created: PropTypes.instanceOf(Date),
-        completed: PropTypes.bool,
-        editing: PropTypes.bool
-    })),
+    tasks: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            description: PropTypes.string,
+            created: PropTypes.instanceOf(Date),
+            completed: PropTypes.bool,
+            editing: PropTypes.bool,
+        })
+    ),
     onDeleteTask: PropTypes.func.isRequired,
-    onToggleCompletedTask: PropTypes.func.isRequired
+    onToggleCompletedTask: PropTypes.func.isRequired,
 };
 
 export default TaskList;

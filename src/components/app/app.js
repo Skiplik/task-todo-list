@@ -3,24 +3,23 @@ import React, { Component } from 'react';
 import './app.css';
 
 import Header from '../header';
-import Footer from "../footer";
-import TaskList from "../task-list";
+import Footer from '../footer';
+import TaskList from '../task-list';
 
 export default class App extends Component {
-
     taskId = 0;
 
     state = {
         filterList: [
             { id: 1, name: 'All', active: true },
             { id: 2, name: 'Active', active: false },
-            { id: 3, name: 'Completed', active: false }
+            { id: 3, name: 'Completed', active: false },
         ],
         tasks: [
             this.createTask('Write what needs to be done!'),
             this.createTask('Press enter!'),
-            this.createTask('Check new task!')
-        ]
+            this.createTask('Check new task!'),
+        ],
     };
 
     addNewTask = (description) => {
@@ -29,55 +28,55 @@ export default class App extends Component {
 
     deleteTask = (id) => {
         this.setState(({ tasks }) => {
-            const newTasks = tasks.filter(task => task.id !== id);
+            const newTasks = tasks.filter((task) => task.id !== id);
             return {
-                tasks: newTasks
+                tasks: newTasks,
             };
         });
     };
 
     toggleCompletedTask = (id) => {
         this.setState(({ tasks }) => {
-            const newTasks = tasks.map(task => ({
+            const newTasks = tasks.map((task) => ({
                 ...task,
-                completed: task.id === id ? !task.completed : task.completed
+                completed: task.id === id ? !task.completed : task.completed,
             }));
 
             return {
-                tasks: newTasks
+                tasks: newTasks,
             };
         });
     };
 
     setFilterTask = (id) => {
         this.setState(({ filterList }) => {
-            const newFilterList = filterList.map(filter => ({
+            const newFilterList = filterList.map((filter) => ({
                 ...filter,
-                active: filter.id === id
+                active: filter.id === id,
             }));
 
             return {
-                filterList: newFilterList
-            }
+                filterList: newFilterList,
+            };
         });
     };
 
     clearCompletedTasks = () => {
-        this.setState(({ tasks }) => ({ tasks: tasks.filter(task => !task.completed) }));
+        this.setState(({ tasks }) => ({ tasks: tasks.filter((task) => !task.completed) }));
     };
 
     getFilteredTask = () => {
         const { tasks, filterList } = this.state;
-        const filter = filterList.filter(item => item.active)[0].name;
+        const filter = filterList.filter((item) => item.active)[0].name;
 
         if (filter === 'All') return tasks;
 
-        return tasks.filter(task => filter === 'Completed' ? task.completed : !task.completed );
+        return tasks.filter((task) => (filter === 'Completed' ? task.completed : !task.completed));
     };
 
     getItemCount = () => {
         const { tasks } = this.state;
-        return tasks.filter(task => !task.completed).length
+        return tasks.filter((task) => !task.completed).length;
     };
 
     createTask(description) {
@@ -88,9 +87,9 @@ export default class App extends Component {
             description,
             created: new Date(),
             completed: false,
-            editing: false
-        }
-    };
+            editing: false,
+        };
+    }
 
     render() {
         const { filterList } = this.state;
@@ -99,19 +98,21 @@ export default class App extends Component {
 
         return (
             <>
-                <Header addNewTask={ this.addNewTask } />
+                <Header addNewTask={this.addNewTask} />
                 <section className="main">
                     <TaskList
-                        tasks={ filterTask }
-                        onDeleteTask={ this.deleteTask }
-                        onToggleCompletedTask={ this.toggleCompletedTask } />
+                        tasks={filterTask}
+                        onDeleteTask={this.deleteTask}
+                        onToggleCompletedTask={this.toggleCompletedTask}
+                    />
                     <Footer
-                        count={ itemsCount }
-                        filters={ filterList }
-                        setFilterTask={ this.setFilterTask }
-                        clearCompletedTasks={ this.clearCompletedTasks } />
+                        count={itemsCount}
+                        filters={filterList}
+                        setFilterTask={this.setFilterTask}
+                        clearCompletedTasks={this.clearCompletedTasks}
+                    />
                 </section>
             </>
         );
-    };
-};
+    }
+}
