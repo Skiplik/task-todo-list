@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatDistance } from 'date-fns'
+import { formatDistanceToNow } from 'date-fns'
 
 import './task.css';
 
@@ -16,7 +16,7 @@ const Task = ({
     let createdDate = created ? new Date(created) : null;
 
     if (createdDate && createdDate.toString() !== 'Invalid Date') {
-        createdString = `created ${ formatDistance(createdDate, new Date()) } ago`;
+        createdString = `created ${ formatDistanceToNow(createdDate) } ago`;
     }
 
     const EditInput = () => editing ? <input type="text" className="edit" defaultValue={description} /> : null;
