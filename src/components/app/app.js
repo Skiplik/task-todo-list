@@ -26,6 +26,35 @@ export default class App extends Component {
         this.setState(({ tasks }) => ({ tasks: [...tasks, this.createTask(description)] }));
     };
 
+    updateTaskOption = (id, key, value) => {
+        this.setState(({ tasks }) => {
+            const newTasks = tasks.map((task) => {
+                if (task.id === id) {
+                    return {
+                        ...task,
+                        [key]: value !== undefined ? value : !task[key],
+                    };
+                }
+                return task;
+            });
+            return {
+                tasks: newTasks,
+            };
+        });
+    };
+
+    saveTaskDescription = (id, desc) => {
+        this.updateTaskOption(id, 'description', desc);
+    };
+
+    selectTask = (id) => {
+        this.updateTaskOption(id, 'selected');
+    };
+
+    toggleCompletedTask = (id) => {
+        this.updateTaskOption(id, 'completed');
+    };
+
     deleteTask = (id) => {
         this.setState(({ tasks }) => {
             const newTasks = tasks.filter((task) => task.id !== id);
@@ -35,11 +64,12 @@ export default class App extends Component {
         });
     };
 
-    toggleCompletedTask = (id) => {
+    toggleEditingTask = (id) => {
+        this.updateTaskOption(id, 'editing');
         this.setState(({ tasks }) => {
             const newTasks = tasks.map((task) => ({
                 ...task,
-                completed: task.id === id ? !task.completed : task.completed,
+                editing: task.id === id ? task.editing : false,
             }));
 
             return {
@@ -61,10 +91,6 @@ export default class App extends Component {
         });
     };
 
-    clearCompletedTasks = () => {
-        this.setState(({ tasks }) => ({ tasks: tasks.filter((task) => !task.completed) }));
-    };
-
     getFilteredTask = () => {
         const { tasks, filterList } = this.state;
         const filter = filterList.filter((item) => item.active)[0].name;
@@ -74,7 +100,11 @@ export default class App extends Component {
         return tasks.filter((task) => (filter === 'Completed' ? task.completed : !task.completed));
     };
 
-    getItemCount = () => {
+    clearCompletedTasks = () => {
+        this.setState(({ tasks }) => ({ tasks: tasks.filter((task) => !task.completed) }));
+    };
+
+    getTasksCount = () => {
         const { tasks } = this.state;
         return tasks.filter((task) => !task.completed).length;
     };
@@ -88,12 +118,13 @@ export default class App extends Component {
             created: new Date(),
             completed: false,
             editing: false,
+            selected: false,
         };
     }
 
     render() {
         const { filterList } = this.state;
-        const itemsCount = this.getItemCount();
+        const tasksCount = this.getTasksCount();
         const filterTask = this.getFilteredTask();
 
         return (
@@ -102,11 +133,14 @@ export default class App extends Component {
                 <section className="main">
                     <TaskList
                         tasks={filterTask}
-                        onDeleteTask={this.deleteTask}
-                        onToggleCompletedTask={this.toggleCompletedTask}
+                        onSelect={this.selectTask}
+                        onDelete={this.deleteTask}
+                        onUpdateDesc={this.saveTaskDescription}
+                        onToggleEdit={this.toggleEditingTask}
+                        onToggleCompleted={this.toggleCompletedTask}
                     />
                     <Footer
-                        count={itemsCount}
+                        count={tasksCount}
                         filters={filterList}
                         setFilterTask={this.setFilterTask}
                         clearCompletedTasks={this.clearCompletedTasks}

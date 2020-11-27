@@ -91,6 +91,10 @@
     content: '✎';
 }
 
+.todo-list li.completed .icon-edit {
+    cursor: not-allowed;
+}
+
 .todo-list li .edit {
     display: none;
 }

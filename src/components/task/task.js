@@ -1,54 +1,114 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { formatDistanceToNow } from 'date-fns';
 
 import './task.css';
 
-const Task = (props) => {
-    const {
-        onDelete: deleteBtnClickHandler,
-        onCompleted: labelClickHandler,
-        task: { description = 'Task description', created, editing = false },
-    } = props;
+export default class Task extends Component {
+    static propTypes = {
+        onDelete: PropTypes.func.isRequired,
+        onCompleted: PropTypes.func.isRequired,
+        onEdit: PropTypes.func.isRequired,
+        onUpdateDesc: PropTypes.func.isRequired,
+        onSelect: PropTypes.func.isRequired,
+        // eslint-disable-next-line react/require-default-props
+        task: PropTypes.shape({
+            description: PropTypes.string,
+            created: PropTypes.instanceOf(Date),
+            editing: PropTypes.bool,
+            completed: PropTypes.bool,
+            selected: PropTypes.bool,
+        }),
+    };
 
-    const getCreatedTime = () => {
+    constructor(props) {
+        super(props);
+        this.textInput = React.createRef();
+    }
+
+    componentDidMount() {
+        if (this.textInput.current) this.textInput.current.focus();
+    }
+
+    componentDidUpdate() {
+        if (this.textInput.current) this.textInput.current.focus();
+    }
+
+    editBtnClickHandler = () => {
+        const {
+            task: { completed = false },
+            onEdit,
+        } = this.props;
+
+        if (completed) return;
+
+        onEdit();
+    };
+
+    editInputUpKeyHandler = (event) => {
+        const { onEdit, onUpdateDesc } = this.props;
+
+        if (!['Enter', 'Escape'].includes(event.code)) return;
+
+        if (event.code === 'Enter') onUpdateDesc(event.target.value);
+
+        onEdit();
+    };
+
+    getCreatedTime = () => {
+        const {
+            task: { created },
+        } = this.props;
+
         if (!(created instanceof Date)) return '';
 
         return `created ${formatDistanceToNow(created)} ago`;
     };
 
-    const EditInput = () => (editing ? <input type="text" className="edit" defaultValue={description} /> : null);
+    render() {
+        const {
+            task: { editing = false, selected = false, description = 'Task description' },
+            onSelect: checkboxChangeHandler,
+            onCompleted: labelClickHandler,
+            onDelete: deleteBtnClickHandler,
+        } = this.props;
 
-    return (
-        <>
-            <div className="view">
-                <input className="toggle" type="checkbox" />
-                <label role="presentation" onClick={labelClickHandler}>
-                    <span className="description">{description}</span>
-                    <span className="created">{getCreatedTime()}</span>
-                </label>
-                <button type="button" aria-label="Edit" className="icon icon-edit" />
-                <button
-                    type="button"
-                    aria-label="Delete"
-                    className="icon icon-destroy"
-                    onClick={deleteBtnClickHandler}
-                />
-            </div>
-            <EditInput />
-        </>
-    );
-};
-
-Task.propTypes = {
-    onDelete: PropTypes.func.isRequired,
-    onCompleted: PropTypes.func.isRequired,
-    // eslint-disable-next-line react/require-default-props
-    task: PropTypes.shape({
-        description: PropTypes.string,
-        created: PropTypes.instanceOf(Date),
-        editing: PropTypes.bool,
-    }),
-};
-
-export default Task;
+        return (
+            <>
+                <div className="view">
+                    <input
+                        className="toggle"
+                        type="checkbox"
+                        defaultChecked={selected}
+                        onChange={checkboxChangeHandler}
+                    />
+                    <label role="presentation" onClick={labelClickHandler}>
+                        <span className="description">{description}</span>
+                        <span className="created">{this.getCreatedTime()}</span>
+                    </label>
+                    <button
+                        type="button"
+                        aria-label="Edit"
+                        className="icon icon-edit"
+                        onClick={this.editBtnClickHandler}
+                    />
+                    <button
+                        type="button"
+                        aria-label="Delete"
+                        className="icon icon-destroy"
+                        onClick={deleteBtnClickHandler}
+                    />
+                </div>
+                {editing && (
+                    <input
+                        ref={this.textInput}
+                        type="text"
+                        className="edit"
+                        defaultValue={description}
+                        onKeyUp={this.editInputUpKeyHandler}
+                    />
+                )}
+            </>
+        );
+    }
+}
