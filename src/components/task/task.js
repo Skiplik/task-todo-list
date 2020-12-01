@@ -10,14 +10,12 @@ export default class Task extends Component {
         onCompleted: PropTypes.func.isRequired,
         onEdit: PropTypes.func.isRequired,
         onUpdateDesc: PropTypes.func.isRequired,
-        onSelect: PropTypes.func.isRequired,
         // eslint-disable-next-line react/require-default-props
         task: PropTypes.shape({
             description: PropTypes.string,
             created: PropTypes.instanceOf(Date),
             editing: PropTypes.bool,
             completed: PropTypes.bool,
-            selected: PropTypes.bool,
         }),
     };
 
@@ -67,22 +65,16 @@ export default class Task extends Component {
 
     render() {
         const {
-            task: { editing = false, selected = false, description = 'Task description' },
-            onSelect: checkboxChangeHandler,
-            onCompleted: labelClickHandler,
+            task: { editing = false, completed = false, description = 'Task description' },
+            onCompleted: toggleCompleteHandler,
             onDelete: deleteBtnClickHandler,
         } = this.props;
 
         return (
             <>
                 <div className="view">
-                    <input
-                        className="toggle"
-                        type="checkbox"
-                        defaultChecked={selected}
-                        onChange={checkboxChangeHandler}
-                    />
-                    <label role="presentation" onClick={labelClickHandler}>
+                    <input className="toggle" type="checkbox" checked={completed} onChange={toggleCompleteHandler} />
+                    <label>
                         <span className="description">{description}</span>
                         <span className="created">{this.getCreatedTime()}</span>
                     </label>

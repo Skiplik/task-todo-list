@@ -6,7 +6,7 @@ import './task-list.css';
 import Task from '../task';
 
 const TaskList = (props) => {
-    const { tasks, onSelect, onDelete, onUpdateDesc, onToggleEdit, onToggleCompleted } = props;
+    const { tasks, onDelete, onUpdateDesc, onToggleEdit, onToggleCompleted } = props;
 
     const items = tasks.map((task) => {
         const { id, completed, editing } = task;
@@ -23,7 +23,6 @@ const TaskList = (props) => {
                 <Task
                     onDelete={() => onDelete(id)}
                     onEdit={() => onToggleEdit(id)}
-                    onSelect={() => onSelect(id)}
                     onCompleted={() => onToggleCompleted(id)}
                     onUpdateDesc={(desc) => onUpdateDesc(id, desc)}
                     task={task}
@@ -47,10 +46,8 @@ TaskList.propTypes = {
             created: PropTypes.instanceOf(Date),
             completed: PropTypes.bool,
             editing: PropTypes.bool,
-            selected: PropTypes.bool,
         })
     ),
-    onSelect: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     onUpdateDesc: PropTypes.func.isRequired,
     onToggleEdit: PropTypes.func.isRequired,

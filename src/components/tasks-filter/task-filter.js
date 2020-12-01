@@ -4,15 +4,16 @@ import PropTypes from 'prop-types';
 import './task-filter.css';
 
 const TaskFilter = (props) => {
-    const { filters, setFilterTask } = props;
+    const { setFilterTask, filter: selected } = props;
+    const filters = ['All', 'Active', 'Completed'];
 
     const filterBtns = filters.map((filter) => {
-        const className = filter.active ? 'selected' : null;
+        const className = filter === selected ? 'selected' : null;
 
         return (
-            <li key={filter.id}>
-                <button type="button" className={className} onClick={() => setFilterTask(filter.id)}>
-                    {filter.name}
+            <li key={Math.random().toFixed(4) * 1000}>
+                <button type="button" className={className} onClick={() => setFilterTask(filter)}>
+                    {filter}
                 </button>
             </li>
         );
@@ -22,17 +23,11 @@ const TaskFilter = (props) => {
 };
 
 TaskFilter.defaultProps = {
-    filters: [],
+    filter: 'All',
 };
 
 TaskFilter.propTypes = {
-    filters: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.number.isRequired,
-            name: PropTypes.string.isRequired,
-            active: PropTypes.bool.isRequired,
-        })
-    ),
+    filter: PropTypes.string,
     setFilterTask: PropTypes.func.isRequired,
 };
 

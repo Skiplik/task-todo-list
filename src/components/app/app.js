@@ -10,11 +10,7 @@ export default class App extends Component {
     taskId = 0;
 
     state = {
-        filterList: [
-            { id: 1, name: 'All', active: true },
-            { id: 2, name: 'Active', active: false },
-            { id: 3, name: 'Completed', active: false },
-        ],
+        filter: 'All',
         tasks: [
             this.createTask('Write what needs to be done!'),
             this.createTask('Press enter!'),
@@ -47,10 +43,6 @@ export default class App extends Component {
         this.updateTaskOption(id, 'description', desc);
     };
 
-    selectTask = (id) => {
-        this.updateTaskOption(id, 'selected');
-    };
-
     toggleCompletedTask = (id) => {
         this.updateTaskOption(id, 'completed');
     };
@@ -78,22 +70,12 @@ export default class App extends Component {
         });
     };
 
-    setFilterTask = (id) => {
-        this.setState(({ filterList }) => {
-            const newFilterList = filterList.map((filter) => ({
-                ...filter,
-                active: filter.id === id,
-            }));
-
-            return {
-                filterList: newFilterList,
-            };
-        });
+    setFilterTask = (filter) => {
+        this.setState({ filter });
     };
 
     getFilteredTask = () => {
-        const { tasks, filterList } = this.state;
-        const filter = filterList.filter((item) => item.active)[0].name;
+        const { tasks, filter } = this.state;
 
         if (filter === 'All') return tasks;
 
@@ -118,12 +100,11 @@ export default class App extends Component {
             created: new Date(),
             completed: false,
             editing: false,
-            selected: false,
         };
     }
 
     render() {
-        const { filterList } = this.state;
+        const { filter } = this.state;
         const tasksCount = this.getTasksCount();
         const filterTask = this.getFilteredTask();
 
@@ -133,7 +114,6 @@ export default class App extends Component {
                 <section className="main">
                     <TaskList
                         tasks={filterTask}
-                        onSelect={this.selectTask}
                         onDelete={this.deleteTask}
                         onUpdateDesc={this.saveTaskDescription}
                         onToggleEdit={this.toggleEditingTask}
@@ -141,7 +121,7 @@ export default class App extends Component {
                     />
                     <Footer
                         count={tasksCount}
-                        filters={filterList}
+                        filter={filter}
                         setFilterTask={this.setFilterTask}
                         clearCompletedTasks={this.clearCompletedTasks}
                     />
