@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import './app.css';
+import './task_timer.css';
 
 import Header from '../header';
 import Footer from '../footer';
@@ -11,15 +12,11 @@ export default class App extends Component {
 
     state = {
         filter: 'All',
-        tasks: [
-            this.createTask('Write what needs to be done!'),
-            this.createTask('Press enter!'),
-            this.createTask('Check new task!'),
-        ],
+        tasks: [this.createTask('fw 0', 1000), this.createTask('fw 1', 1000), this.createTask('fw 2', 1000)],
     };
 
-    addNewTask = (description) => {
-        this.setState(({ tasks }) => ({ tasks: [...tasks, this.createTask(description)] }));
+    addNewTask = (description, time) => {
+        this.setState(({ tasks }) => ({ tasks: [...tasks, this.createTask(description, time)] }));
     };
 
     updateTaskOption = (id, key, value) => {
@@ -91,12 +88,13 @@ export default class App extends Component {
         return tasks.filter((task) => !task.completed).length;
     };
 
-    createTask(description) {
+    createTask(description, time) {
         this.taskId += 1;
 
         return {
             id: this.taskId,
             description,
+            time,
             created: new Date(),
             completed: false,
             editing: false,

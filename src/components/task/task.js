@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, format } from 'date-fns';
 
 import './task.css';
 
@@ -13,6 +13,7 @@ export default class Task extends Component {
         // eslint-disable-next-line react/require-default-props
         task: PropTypes.shape({
             description: PropTypes.string,
+            time: PropTypes.number,
             created: PropTypes.instanceOf(Date),
             editing: PropTypes.bool,
             completed: PropTypes.bool,
@@ -21,15 +22,36 @@ export default class Task extends Component {
 
     constructor(props) {
         super(props);
+
         this.textInput = React.createRef();
+
+        const {
+            task: { time = 0 },
+        } = this.props;
+
+        this.state = {
+            created: this.getCreatedTime(),
+            timer: time,
+        };
     }
 
     componentDidMount() {
+        this.creationTimer = setInterval(() => {
+            this.setState({
+                created: this.getCreatedTime(),
+            });
+        }, 60 * 1000);
+
         if (this.textInput.current) this.textInput.current.focus();
     }
 
     componentDidUpdate() {
         if (this.textInput.current) this.textInput.current.focus();
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.creationTimer);
+        this.pauseTask();
     }
 
     editBtnClickHandler = () => {
@@ -63,6 +85,30 @@ export default class Task extends Component {
         return `created ${formatDistanceToNow(created)} ago`;
     };
 
+    getRunTime = (time) => {
+        return format(new Date(time * 1000), 'mm:ss');
+    };
+
+    playTask = () => {
+        this.setState(({ timer }) => ({ timer: timer - 1 }));
+
+        this.runTimer = setInterval(() => {
+            this.setState(({ timer }) => {
+                const newTime = timer - 1;
+
+                if (!newTime) {
+                    clearInterval(this.runTimer);
+                }
+
+                return { timer: timer - 1 };
+            });
+        }, 1000);
+    };
+
+    pauseTask = () => {
+        clearInterval(this.runTimer);
+    };
+
     render() {
         const {
             task: { editing = false, completed = false, description = 'Task description' },
@@ -70,13 +116,32 @@ export default class Task extends Component {
             onDelete: deleteBtnClickHandler,
         } = this.props;
 
+        const { created, timer } = this.state;
+
+        const runTime = this.getRunTime(timer);
+
         return (
             <>
                 <div className="view">
                     <input className="toggle" type="checkbox" checked={completed} onChange={toggleCompleteHandler} />
                     <label>
-                        <span className="description">{description}</span>
-                        <span className="created">{this.getCreatedTime()}</span>
+                        <span className="title">{description}</span>
+                        <span className="description">
+                            <button
+                                type="button"
+                                aria-label="Play"
+                                className="icon icon-play"
+                                onClick={this.playTask}
+                            />
+                            <button
+                                type="button"
+                                aria-label="Pause"
+                                className="icon icon-pause"
+                                onClick={this.pauseTask}
+                            />
+                            {runTime}
+                        </span>
+                        <span className="description">{created}</span>
                     </label>
                     <button
                         type="button"

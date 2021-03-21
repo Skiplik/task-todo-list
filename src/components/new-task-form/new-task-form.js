@@ -8,49 +8,106 @@ export default class NewTaskForm extends Component {
         addNewTask: PropTypes.func.isRequired,
     };
 
-    constructor() {
-        super();
-        this.textInput = React.createRef();
+    constructor(props) {
+        super(props);
+        this.task = React.createRef();
+        this.min = React.createRef();
+        this.sec = React.createRef();
     }
 
     state = {
-        todoName: '',
+        taskName: '',
+        taskMin: '',
+        taskSec: '',
     };
 
     componentDidMount() {
-        this.textInput.current.focus();
+        this.task.current.focus();
     }
 
-    inputInputHandler = (event) => {
+    inputInputHandler = (event, field) => {
         this.setState({
-            todoName: event.target.value,
+            [field]: event.target.value,
         });
     };
 
     inputEnterPressHandler = (event) => {
-        const { todoName } = this.state;
+        const { taskName, taskMin, taskSec } = this.state;
         const { addNewTask } = this.props;
 
-        if (event.code !== 'Enter' || !todoName) return;
+        if (event.code !== 'Enter' || !this.checkFullness()) return;
 
-        addNewTask(todoName);
+        const time = 60 * taskMin + parseInt(taskSec, 10);
+
+        addNewTask(taskName, time);
+
         this.setState({
-            todoName: '',
+            taskName: '',
+            taskMin: '',
+            taskSec: '',
         });
     };
 
+    checkFullness() {
+        const { taskName, taskMin, taskSec } = this.state;
+
+        if (!taskName.length) {
+            this.task.current.focus();
+            return false;
+        }
+
+        if (!taskMin.length || Number.isNaN(parseInt(taskMin, 10))) {
+            this.min.current.value = '';
+            this.min.current.focus();
+            return false;
+        }
+
+        if (!taskSec.length || Number.isNaN(parseInt(taskSec, 10))) {
+            this.sec.current.value = '';
+            this.sec.current.focus();
+            return false;
+        }
+
+        return true;
+    }
+
     render() {
-        const { todoName } = this.state;
+        const { taskName, taskMin, taskSec } = this.state;
 
         return (
-            <input
-                ref={this.textInput}
-                className="new-todo"
-                placeholder="What needs to be done?"
-                onInput={this.inputInputHandler}
-                onKeyPress={this.inputEnterPressHandler}
-                value={todoName}
-            />
+            <form className="new-todo-form">
+                <input
+                    ref={this.task}
+                    type="text"
+                    className="new-todo"
+                    placeholder="Task"
+                    onInput={(event) => {
+                        this.inputInputHandler(event, 'taskName');
+                    }}
+                    onKeyPress={this.inputEnterPressHandler}
+                    value={taskName}
+                />
+                <input
+                    ref={this.min}
+                    className="new-todo-form__timer"
+                    placeholder="Min"
+                    onInput={(event) => {
+                        this.inputInputHandler(event, 'taskMin');
+                    }}
+                    onKeyPress={this.inputEnterPressHandler}
+                    value={taskMin}
+                />
+                <input
+                    ref={this.sec}
+                    className="new-todo-form__timer"
+                    placeholder="Sec"
+                    onInput={(event) => {
+                        this.inputInputHandler(event, 'taskSec');
+                    }}
+                    onKeyPress={this.inputEnterPressHandler}
+                    value={taskSec}
+                />
+            </form>
         );
     }
 }

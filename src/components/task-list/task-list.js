@@ -43,6 +43,7 @@ TaskList.propTypes = {
         PropTypes.shape({
             id: PropTypes.number.isRequired,
             description: PropTypes.string,
+            time: PropTypes.number,
             created: PropTypes.instanceOf(Date),
             completed: PropTypes.bool,
             editing: PropTypes.bool,
