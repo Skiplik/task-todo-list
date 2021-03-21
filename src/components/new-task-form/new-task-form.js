@@ -25,19 +25,56 @@ export default class NewTaskForm extends Component {
         this.task.current.focus();
     }
 
-    inputInputHandler = (event, field) => {
+    taskNameInputHandler = (event) => {
         this.setState({
-            [field]: event.target.value,
+            taskName: event.target.value,
         });
+    };
+
+    taskMinInputHandler = ({ target: { value } }) => {
+        const parseValue = parseInt(value, 10);
+
+        if (value.length && Number.isNaN(parseValue)) return false;
+
+        this.setState({
+            taskMin: value.length ? parseValue : '',
+        });
+
+        return true;
+    };
+
+    taskSecInputHandler = ({ target: { value } }) => {
+        const parseValue = parseInt(value, 10);
+
+        if (value.length && Number.isNaN(parseValue)) return false;
+
+        this.setState({
+            taskSec: value.length ? parseValue : '',
+        });
+
+        return true;
     };
 
     inputEnterPressHandler = (event) => {
         const { taskName, taskMin, taskSec } = this.state;
         const { addNewTask } = this.props;
 
-        if (event.code !== 'Enter' || !this.checkFullness()) return;
+        if (event.code !== 'Enter') return;
 
-        const time = 60 * taskMin + parseInt(taskSec, 10);
+        if (!taskName.length) {
+            this.task.current.focus();
+            return;
+        }
+
+        let time = 0;
+
+        if (taskMin > 0) {
+            time += 60 * taskMin;
+        }
+
+        if (taskSec > 0) {
+            time += parseInt(taskSec, 10);
+        }
 
         addNewTask(taskName, time);
 
@@ -47,29 +84,6 @@ export default class NewTaskForm extends Component {
             taskSec: '',
         });
     };
-
-    checkFullness() {
-        const { taskName, taskMin, taskSec } = this.state;
-
-        if (!taskName.length) {
-            this.task.current.focus();
-            return false;
-        }
-
-        if (!taskMin.length || Number.isNaN(parseInt(taskMin, 10))) {
-            this.min.current.value = '';
-            this.min.current.focus();
-            return false;
-        }
-
-        if (!taskSec.length || Number.isNaN(parseInt(taskSec, 10))) {
-            this.sec.current.value = '';
-            this.sec.current.focus();
-            return false;
-        }
-
-        return true;
-    }
 
     render() {
         const { taskName, taskMin, taskSec } = this.state;
@@ -81,9 +95,7 @@ export default class NewTaskForm extends Component {
                     type="text"
                     className="new-todo"
                     placeholder="Task"
-                    onInput={(event) => {
-                        this.inputInputHandler(event, 'taskName');
-                    }}
+                    onInput={this.taskNameInputHandler}
                     onKeyPress={this.inputEnterPressHandler}
                     value={taskName}
                 />
@@ -91,9 +103,7 @@ export default class NewTaskForm extends Component {
                     ref={this.min}
                     className="new-todo-form__timer"
                     placeholder="Min"
-                    onInput={(event) => {
-                        this.inputInputHandler(event, 'taskMin');
-                    }}
+                    onInput={this.taskMinInputHandler}
                     onKeyPress={this.inputEnterPressHandler}
                     value={taskMin}
                 />
@@ -101,11 +111,10 @@ export default class NewTaskForm extends Component {
                     ref={this.sec}
                     className="new-todo-form__timer"
                     placeholder="Sec"
-                    onInput={(event) => {
-                        this.inputInputHandler(event, 'taskSec');
-                    }}
+                    onInput={this.taskSecInputHandler}
                     onKeyPress={this.inputEnterPressHandler}
                     value={taskSec}
+                    maxLength={2}
                 />
             </form>
         );

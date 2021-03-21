@@ -40,6 +40,10 @@ export default class App extends Component {
         this.updateTaskOption(id, 'description', desc);
     };
 
+    saveTaskTime = (id, time) => {
+        this.updateTaskOption(id, 'time', time);
+    };
+
     toggleCompletedTask = (id) => {
         this.updateTaskOption(id, 'completed');
     };
@@ -114,6 +118,7 @@ export default class App extends Component {
                         tasks={filterTask}
                         onDelete={this.deleteTask}
                         onUpdateDesc={this.saveTaskDescription}
+                        onUpdateTime={this.saveTaskTime}
                         onToggleEdit={this.toggleEditingTask}
                         onToggleCompleted={this.toggleCompletedTask}
                     />

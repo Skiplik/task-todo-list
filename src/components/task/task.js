@@ -10,6 +10,7 @@ export default class Task extends Component {
         onCompleted: PropTypes.func.isRequired,
         onEdit: PropTypes.func.isRequired,
         onUpdateDesc: PropTypes.func.isRequired,
+        onUpdateTime: PropTypes.func.isRequired,
         // eslint-disable-next-line react/require-default-props
         task: PropTypes.shape({
             description: PropTypes.string,
@@ -25,13 +26,10 @@ export default class Task extends Component {
 
         this.textInput = React.createRef();
 
-        const {
-            task: { time = 0 },
-        } = this.props;
+        this.runTimer = null;
 
         this.state = {
             created: this.getCreatedTime(),
-            timer: time,
         };
     }
 
@@ -46,6 +44,11 @@ export default class Task extends Component {
     }
 
     componentDidUpdate() {
+        const {
+            task: { completed },
+        } = this.props;
+
+        if (completed) this.pauseTask();
         if (this.textInput.current) this.textInput.current.focus();
     }
 
@@ -90,35 +93,37 @@ export default class Task extends Component {
     };
 
     playTask = () => {
-        this.setState(({ timer }) => ({ timer: timer - 1 }));
+        const {
+            onUpdateTime,
+            task: { completed },
+        } = this.props;
+
+        if (completed || this.runTimer !== null) return;
 
         this.runTimer = setInterval(() => {
-            this.setState(({ timer }) => {
-                const newTime = timer - 1;
+            const {
+                task: { time = 0 },
+            } = this.props;
 
-                if (!newTime) {
-                    clearInterval(this.runTimer);
-                }
-
-                return { timer: timer - 1 };
-            });
+            onUpdateTime(time + 1);
         }, 1000);
     };
 
     pauseTask = () => {
         clearInterval(this.runTimer);
+        this.runTimer = null;
     };
 
     render() {
         const {
-            task: { editing = false, completed = false, description = 'Task description' },
+            task: { editing = false, completed = false, description = 'Task description', time = 0 },
             onCompleted: toggleCompleteHandler,
             onDelete: deleteBtnClickHandler,
         } = this.props;
 
-        const { created, timer } = this.state;
+        const { created } = this.state;
 
-        const runTime = this.getRunTime(timer);
+        const runTime = this.getRunTime(time);
 
         return (
             <>
